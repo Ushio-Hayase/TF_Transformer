@@ -1,0 +1,10 @@
+/.venv
+train.json
+train_tf.json
+valid.json
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/TF_Trans.iml
+/.idea/vcs.xml
+/.idea/.gitignore
