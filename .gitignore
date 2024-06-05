@@ -8,3 +8,5 @@ valid.json
 /.idea/TF_Trans.iml
 /.idea/vcs.xml
 /.idea/.gitignore
+/.idea
+*pycache*
