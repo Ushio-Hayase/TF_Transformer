@@ -80,5 +80,4 @@ if __name__ == "__main__":
 
     model.fit(train_dataloader, batch_size=BATCH_SIZE, epochs=1, shuffle=True, validation_data=valid_dataloader)
 
-    model.save_weights("model.weights.h5")
     model.save("model.keras")
