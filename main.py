@@ -5,6 +5,11 @@ from modules.Transformer import Transformer
 import numpy as np
 from data import Dataloader
 
+CLS = 101 # bos token
+SEP = 102 # eod token
+BATCH_SIZE = 64
+EPOCH = 5
+
 
 def loss_function(real, pred):
     mask = tf.math.logical_not(tf.math.equal(real, 0))
@@ -33,16 +38,24 @@ train_step_signature = [
 ]
 
 def train_step(inp, tar, train = True):
-    pad_left = tf.constant([[101]], dtype=tf.int64)
+    pad_left = tf.constant([[CLS]], dtype=tf.int64)
     pad_left = tf.repeat(pad_left, BATCH_SIZE, axis=0)
     tar_inp = tar[:, 1:]
     tar_inp = tf.concat([pad_left, tar_inp], axis=-1)
     
 
-    pad_right = tf.constant([[102]], dtype=tf.int64)
-    pad_right = tf.repeat(pad_right, BATCH_SIZE, axis=0)
-    tar_real = tar[:, :-1]
-    tar_real = tf.concat([tar_real, pad_right], axis=-1)
+    tar_real = tar
+    mask = tf.equal(tar_real, SEP)
+    indices = tf.where(mask)
+
+    if tf.size(indices) > 0:
+        first_index = indices[0]
+        tar_real = tf.tensor_scatter_nd_update(tar_real, [first_index], [SEP])
+    else:
+        pad_right = tf.constant([[SEP]], dtype=tf.int64)
+        pad_right = tf.repeat(pad_right, BATCH_SIZE, axis=0)
+        tar_real = tar[:, :-1]
+        tar_real = tf.concat([tar_real, pad_right], axis=-1)
 
     with tf.GradientTape() as tape:
         predictions = model([inp, tar_inp],
@@ -85,9 +98,7 @@ def distributed_train_step(inp, tar, train = True):
 
 
 if __name__ == "__main__":
-    BATCH_SIZE = 64
-    EPOCH = 5
-
+    
     gpus = tf.config.experimental.list_logical_devices('GPU')
 
     strategy = tf.distribute.MirroredStrategy([gpu.name for gpu in gpus])
