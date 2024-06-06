@@ -7,6 +7,7 @@ from data import Dataloader
 
 CLS = 101 # bos token
 SEP = 102 # eod token
+PAD = 0 # pad_token
 BATCH_SIZE = 64
 EPOCH = 5
 
@@ -45,7 +46,7 @@ def train_step(inp, tar, train = True):
     
 
     tar_real = tar
-    mask = tf.equal(tar_real, SEP)
+    mask = tf.equal(tar_real, PAD)
     indices = tf.where(mask)
 
     if tf.size(indices) > 0:
