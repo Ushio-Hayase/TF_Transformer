@@ -12,7 +12,6 @@ class Decoder(K.layers.Layer):
 
         self.d_model = d_model
 
-        self.embd = K.layers.Embedding(vocab_size, d_model)
         self.pos_enc = PositionalEncoding(vocab_size, d_model)
         self.dropout = K.layers.Dropout(dropout)
 
@@ -26,9 +25,7 @@ class Decoder(K.layers.Layer):
             = inputs["input"], inputs["encoder_output"], \
             inputs["look_ahead_mask"], inputs["padding_mask"]
 
-        embeddings = self.embd(input)
-        embeddings *= tf.math.sqrt(tf.cast(self.d_model, tf.float32))
-        embeddings = self.pos_enc(embeddings)
+        embeddings = self.pos_enc(input)
 
         output = self.dropout(embeddings)
 
