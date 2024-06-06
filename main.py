@@ -40,7 +40,7 @@ train_step_signature = [
 
 def train_step(inp, tar, train = True):
     pad_left = tf.constant([[CLS]], dtype=tf.int64)
-    pad_left = tf.repeat(pad_left, BATCH_SIZE, axis=0)
+    pad_left = tf.repeat(pad_left, tar.shape[0], axis=0)
     tar_inp = tar[:, 1:]
     tar_inp = tf.concat([pad_left, tar_inp], axis=-1)
     
@@ -54,7 +54,7 @@ def train_step(inp, tar, train = True):
         tar_real = tf.tensor_scatter_nd_update(tar_real, [first_index], [SEP])
     else:
         pad_right = tf.constant([[SEP]], dtype=tf.int64)
-        pad_right = tf.repeat(pad_right, BATCH_SIZE, axis=0)
+        pad_right = tf.repeat(pad_right, tar.shape[0], axis=0)
         tar_real = tar[:, :-1]
         tar_real = tf.concat([tar_real, pad_right], axis=-1)
 
