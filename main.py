@@ -167,7 +167,7 @@ if __name__ == "__main__":
                            ('train_acc', train_accuracy.result()), ('val_loss', valid_loss.result()),\
                               ('val_acc', valid_accuracy.result())]
 
-                bar.update(step + 1, values=values, finalize=True)
+            bar.update(step + 1, values=values, finalize=True)
             
             ckpt_save_path = ckpt_manager.save()
             model.save_weights(f'./checkpoints/{epoch}.weights.h5')
